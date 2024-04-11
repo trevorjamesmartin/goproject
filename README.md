@@ -1,0 +1,2 @@
+# goproject
+Go, Templ, Htmx
