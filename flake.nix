@@ -99,7 +99,9 @@
                         echo "updating postgresql.conf"
                         sed -i -e "s@#unix_socket_directories *= *.*@unix_socket_directories = '$PGDATA/run'@" $PGDATA/postgresql.conf
                         echo "...initialized"
-
+                        go get github.com/a-h/templ
+                        go get github.com/lib/pq
+                        go mod tidy
                       fi
                     }
 
