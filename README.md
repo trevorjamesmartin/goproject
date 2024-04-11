@@ -15,6 +15,9 @@ On first run, your environment & database server will be initialized.
 Subsequently, the database server will be started/stopped when you enter/exit the development shell.
 
 
+    go mod tidy
+
+
 ## hot reload templ components
 
     templ generate --watch --proxy="http://localhost:3000" --cmd="go run ."
