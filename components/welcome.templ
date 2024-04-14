@@ -3,6 +3,8 @@ package components
 templ headerComponent(title string) {
 	<head>
 		<script src="/htmx.min.js"></script>
+		<script src="/class-tools.js"></script>
+
 		<title>{ title }</title>
 		<link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet" />
 
@@ -76,6 +78,12 @@ templ headerComponent(title string) {
 		  top:-10px;
 		}
 		ul li:hover,ul li:focus{
+		  box-shadow:10px 10px 7px rgba(0,0,0,.7);
+		  transform: scale(1.25);
+		  position:relative;
+		  z-index:5;
+		}
+		ul li.hovered-state {
 		  box-shadow:10px 10px 7px rgba(0,0,0,.7);
 		  transform: scale(1.25);
 		  position:relative;

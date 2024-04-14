@@ -32,7 +32,7 @@ templ TodoForm() {
 
 
 templ ListItemTodo(id int, name string, description string, available bool) {
-  <li key={ strconv.Itoa(id) } hx-target="this" hx-swap="outerHTML" class="todo">
+  <li key={ strconv.Itoa(id) } hx-ext="class-tools" hx-target="this" hx-swap="outerHTML" class="hovered-state" classes="remove hovered-state">
       @todoIsAvailable(id, available)
       <h2>{ name }</h2>
       <p>{ description }</p>
@@ -41,7 +41,7 @@ templ ListItemTodo(id int, name string, description string, available bool) {
 }
 
 templ TodoEdit(id int, name string, description string, available bool) {
-  <li id={ "todo-" + strconv.Itoa(id) } hx-target="this" hx-swap="outerHTML" class="todo" >
+  <li id={ "todo-" + strconv.Itoa(id) } hx-ext="class-tools" hx-target="this" hx-swap="outerHTML" class="hovered-state" classes="remove hovered-state" >
     <script type="text/javascript">
       function updateTodoInput(i) {
 	i.querySelector('input#name').setAttribute('value', i.querySelector('span h2#name').innerText)

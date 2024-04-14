@@ -42,23 +42,26 @@ func urlKey(key string, r *http.Request) (bool, string) {
 	return false, ""
 }
 
-func localHtmx(w http.ResponseWriter, r *http.Request) {
-	f, err := filepath.Abs("./static/htmx.min.js")
-	if err != nil {
-		http.NotFound(w, r)
+func serveLocalFile(fname string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		f, err := filepath.Abs(fname)
+		result, err := os.ReadFile(f)
+		if err != nil {
+			http.NotFound(w, r)
+		}
+		fmt.Fprintf(w, "%s", result)
 	}
-	// read
-	htmx, err := os.ReadFile(f)
-	if err != nil {
-		http.NotFound(w, r)
-	}
-	// write
-	fmt.Fprintf(w, "%s", htmx)
 }
 
 // NewRouter ...:
 func NewRouter() http.Handler {
 	mux := http.NewServeMux()
+
+	// local htmx
+	mux.HandleFunc("GET /class-tools.js", serveLocalFile("./static/class-tools.js"))
+
+	mux.HandleFunc("GET /htmx.min.js", serveLocalFile("./static/htmx.min.js"))
+
 	mux.HandleFunc("/", indexHandler)
 
 	mux.HandleFunc("/api/todo", todoListHandler)
@@ -68,9 +71,6 @@ func NewRouter() http.Handler {
 	mux.HandleFunc("/api/todo/toggle/{id}", todoToggle)
 	mux.HandleFunc("GET /api/todo/edit/{id}", todoEdit)
 	mux.HandleFunc("PUT /api/todo/update/{id}", todoUpdate)
-
-	// local htmx
-	mux.HandleFunc("GET /htmx.min.js", localHtmx)
 
 	return mux
 }

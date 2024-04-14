@@ -59,6 +59,7 @@
                     postgresql
                     go
                     (templ system)
+                    tree-sitter
                   ];
 
                   enterShell = ''
@@ -75,7 +76,8 @@
                     {
                       if [[ ! -f ./static/htmx.min.js ]]; then
                         echo "downloading htmx.min.js"
-                        curl -o $HTMXMIN ./static/htmx.min.js https://unpkg.com/htmx.org@1.9.11/dist/htmx.min.js
+                        curl -o ./static/htmx.min.js https://unpkg.com/htmx.org@1.9.11/dist/htmx.min.js
+                        curl -o ./static/class-tools.js https://unpkg.com/htmx.org@1.9.11/dist/ext/class-tools.js
                       fi
                     }
 
