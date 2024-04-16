@@ -59,17 +59,15 @@ func NewRouter() http.Handler {
 
 	// local htmx
 	mux.HandleFunc("GET /class-tools.js", serveLocalFile("./static/class-tools.js"))
-
 	mux.HandleFunc("GET /htmx.min.js", serveLocalFile("./static/htmx.min.js"))
-	mux.HandleFunc("GET /reaniebeaniev20.woff2", serveLocalFile("./static/reaniebeaniev20.woff2"))
 
 	mux.HandleFunc("/", indexHandler)
 
 	mux.HandleFunc("/api/todo", todoListHandler)
-
 	mux.HandleFunc("/api/todo/{id}", todoHandler)
 
 	mux.HandleFunc("/api/todo/toggle/{id}", todoToggle)
+
 	mux.HandleFunc("GET /api/todo/edit/{id}", todoEdit)
 	mux.HandleFunc("PUT /api/todo/update/{id}", todoUpdate)
 
@@ -208,7 +206,6 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	switch path {
 	case "/":
 		btn := components.NewTodo()
-		//form := components.TodoForm()
 		x := components.ContentPage("Todo", btn)
 		err := x.Render(context.Background(), w)
 		if err != nil {
