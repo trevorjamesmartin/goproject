@@ -61,6 +61,7 @@ func NewRouter() http.Handler {
 	mux.HandleFunc("GET /class-tools.js", serveLocalFile("./static/class-tools.js"))
 
 	mux.HandleFunc("GET /htmx.min.js", serveLocalFile("./static/htmx.min.js"))
+	mux.HandleFunc("GET /reaniebeaniev20.woff2", serveLocalFile("./static/reaniebeaniev20.woff2"))
 
 	mux.HandleFunc("/", indexHandler)
 
@@ -160,14 +161,42 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func todoListHandler(w http.ResponseWriter, _ *http.Request) {
+func todoListHandler(w http.ResponseWriter, r *http.Request) {
 	store := db.Connect()
 	defer store.Close()
+
+	if r.Method == "POST" {
+		r.ParseForm()
+		name := "NEW"
+		description := "TODO"
+		t := db.Todo{}
+		t.Name = name
+		t.Description = description
+		t.ID = -1
+		t.Available = true
+		t.Save(store)
+	}
 
 	tl := db.TodoList{}
 	tl.Read(store)
 
-	fmt.Fprintln(w, library.PrettyPrintJSON(tl.Value))
+	switch r.PathValue("format") {
+	case "json":
+		fmt.Fprintln(w, library.PrettyPrintJSON(tl.Value))
+		break
+	default:
+		w.Write([]byte("<ul id=\"todo-list\">"))
+		for i := 0; i < len(tl.Value); i++ {
+			todo := tl.Value[i]
+			err := todo.ListItem().Render(context.Background(), w)
+			if err != nil {
+				log.Fatalf("failed to render TODO: %v", err)
+			}
+		}
+		w.Write([]byte("</ul>"))
+		break
+	}
+
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -176,25 +205,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	store := db.Connect()
 	defer store.Close()
 
-	if r.Method == "POST" {
-		r.ParseForm()
-		name := r.FormValue("name")
-		description := r.FormValue("description")
-		if len(name) > 0 && len(description) > 0 {
-			todo := db.Todo{}
-			todo.ID = -1
-			todo.Name = name
-			todo.Description = description
-			todo.Available = true
-			todo.Save(store)
-			fmt.Printf("NEW: %s - %s\n", name, description)
-		}
-	}
-
 	switch path {
 	case "/":
-		form := components.TodoForm()
-		x := components.ContentPage("Todo", form)
+		btn := components.NewTodo()
+		//form := components.TodoForm()
+		x := components.ContentPage("Todo", btn)
 		err := x.Render(context.Background(), w)
 		if err != nil {
 			log.Fatalf("failed to write output file: %v", err)
@@ -208,8 +223,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	tl := db.TodoList{}
 
 	tl.Read(store)
-
-	w.Write([]byte("<ul>"))
+	w.Write([]byte("<ul id=\"todo-list\">"))
 	for i := 0; i < len(tl.Value); i++ {
 		todo := tl.Value[i]
 		err := todo.ListItem().Render(context.Background(), w)

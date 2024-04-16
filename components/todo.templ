@@ -1,37 +1,24 @@
 package components
 
-import "strconv"
+import	"strconv"
 
-templ todoLabel(name string) {
-	<p class="todo-name">{ name }</p>
-}
 
-templ todoDescription(description string) {
-	<div class="content">
-	  <p>{ description }</p>
-	</div>
+// clickable div
+templ NewTodo() {
+  <div class="new-todo" hx-target="next ul#todo-list"  hx-post="/api/todo">+ New Todo</div>
 }
 
 templ todoIsAvailable(id int, available bool) {
-	if !available {
-	<span class="todo-available" hx-post={ "/api/todo/toggle/" + strconv.Itoa(id) } hx-swap="outerHTML ignoreTitle:true">☑</span>
-	
-	<span class="todo-remove" hx-delete={ "/api/todo/" + strconv.Itoa(id) } hx-swap="outerHTML ignoreTitle:true">❌</span>
-	} else {
-	<span class="todo-available" hx-post={ "/api/todo/toggle/" + strconv.Itoa(id) } hx-swap="outerHTML ignoreTitle:true">☐</span>
-	}
+  if !available {
+    <span class="todo-available" hx-post={ "/api/todo/toggle/" + strconv.Itoa(id) } hx-swap="outerHTML ignoreTitle:true">☑</span>
+    <span class="todo-remove" hx-delete={ "/api/todo/" + strconv.Itoa(id) } hx-swap="outerHTML ignoreTitle:true">❌</span>
+  } else {
+    <span class="todo-available" hx-post={ "/api/todo/toggle/" + strconv.Itoa(id) } hx-swap="outerHTML ignoreTitle:true">☐</span>
+  }
 }
 
-templ TodoForm() {
-	<form action="/" method="POST">
-	  <div class="todo-name-wrapper"><input class="todo-name" name="name" placeholder="title / short description" /></div>
-	  <div class="todo-description-wrapper"><textarea class="todo-description" placeholder="long description..." name="description" /></div>
-	  <button type="submit">submit</button>
-	</form>
-}
-
-
-templ ListItemTodo(id int, name string, description string, available bool) {
+// 'read only' <li>{todo}</li> 
+templ TodoItem(id int, name string, description string, available bool) {
   <li key={ strconv.Itoa(id) } hx-ext="class-tools" hx-target="this" hx-swap="outerHTML" class="hovered-state" classes="remove hovered-state">
       @todoIsAvailable(id, available)
       <h2>{ name }</h2>
@@ -40,6 +27,7 @@ templ ListItemTodo(id int, name string, description string, available bool) {
   </li>
 }
 
+// 'editable' <li>{todo}</li>  
 templ TodoEdit(id int, name string, description string, available bool) {
   <li id={ "todo-" + strconv.Itoa(id) } hx-ext="class-tools" hx-target="this" hx-swap="outerHTML" class="hovered-state" classes="remove hovered-state" >
     <script type="text/javascript">
@@ -49,17 +37,17 @@ templ TodoEdit(id int, name string, description string, available bool) {
 	return true
       }
     </script>
-      @todoIsAvailable(id, available)
-      <form class="todo-item" hx-put={ "/api/todo/update/" + strconv.Itoa(id) } hx-include="span h2" onsubmit="updateTodoInput(this)" >
-	<span id={ "content" + strconv.Itoa(id) } contenteditable>
-	  <h2 id="name" name="name" onchange="console.log">{ name }</h2>
-	  <p id="description" name="description" >{ description }</p>
-	</span>
-	<input id="name" type="text" name="name" value={ name } hidden />
-	<input id="description" type="text" name="description" value={ description } hidden />
-	<button class="btn" >Update</button>
-	<button class="btn" hx-get={ "/api/todo/" + strconv.Itoa(id) }>Cancel</button>
-      </form>
+    @todoIsAvailable(id, available)
+    <form class="todo-item" hx-put={ "/api/todo/update/" + strconv.Itoa(id) } hx-include="span h2" onsubmit="updateTodoInput(this)" >
+      <span id={ "content" + strconv.Itoa(id) } contenteditable>
+	<h2 id="name" name="name" onchange="console.log">{ name }</h2>
+	<p id="description" name="description" >{ description }</p>
+      </span>
+      <input id="name" type="text" name="name" value={ name } hidden />
+      <input id="description" type="text" name="description" value={ description } hidden />
+      <button class="btn" >Update</button>
+      <button class="btn" hx-get={ "/api/todo/" + strconv.Itoa(id) }>Cancel</button>
+    </form>
   </li>
 }
 

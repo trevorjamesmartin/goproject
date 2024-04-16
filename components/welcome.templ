@@ -4,139 +4,19 @@ templ headerComponent(title string) {
 	<head>
 		<script src="/htmx.min.js"></script>
 		<script src="/class-tools.js"></script>
-
 		<title>{ title }</title>
-		<link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet" />
-
-		<style>
-		body {
-		  margin: 20px auto;
-		  background:#777;
-		  color:#fff;
-		}
-		*{
-		  margin:0;
-		  padding:0;
-		}
-		input,textarea {
-		  margin:0;
-		  padding:0;
-		  border: none;
-		  max-width=100%;
-		  background: rgba(255,255,255, 0)
-		}
-		h2,.input-name {
-		  font-weight: bold;
-		  font-size: 1.7rem;
-		}
-		p,.input-description {
-		  font-family: 'Reenie Beanie';
-		  font-size: 1.5rem;
-		}
-
-		.input-name,input-description {
-		  width: 100%;
-		}
-		ul,li{
-		  list-style:none;
-		}
-		ul{
-		  display: flex;
-		  flex-wrap: wrap;
-		  justify-content: center;
-		}
-		ul li {
-		  text-decoration:none;
-		  color:#000;
-		  # background:#ffc;
-		  background:#ffa;
-		  display:block;
-		  height:10em;
-		  width:10em;
-		  padding:1em;
-		  box-shadow: 5px 5px 7px rgba(33,33,33,.7);
-
-		  margin:1em;
-		  transform: rotate(-6deg);
-		  
-		  transition: transform .15s linear;
-
-		}
-		ul li:nth-child(even) {
-		  transform:rotate(4deg);
-		  position:relative;
-		  top:5px;
-		}
-		ul li:nth-child(3n) {
-		  transform:rotate(-3deg);
-		  position:relative;
-		  top:-5px;
-		}
-		ul li:nth-child(5n) {
-		  transform:rotate(5deg);
-		  position:relative;
-		  top:-10px;
-		}
-		ul li:hover,ul li:focus{
-		  box-shadow:10px 10px 7px rgba(0,0,0,.7);
-		  transform: scale(1.25);
-		  position:relative;
-		  z-index:5;
-		}
-		ul li.hovered-state {
-		  box-shadow:10px 10px 7px rgba(0,0,0,.7);
-		  transform: scale(1.25);
-		  position:relative;
-		  z-index:5;
-		}
-		ul li:nth-child(even) {
-		  position:relative;
-		  top:5px;
-		  # background:#cfc;
-		}
-		ul li:nth-child(3n) {
-		  position:relative;
-		  top:-5px;
-		  # background:#ccf;
-		}
-
-		.edit-todo {
-			cursor: pointer;
-		}
-		.todo-available {
-			cursor: pointer;
-			position: absolute;
-			z-index: 1;
-			bottom: .2em;
-			left: .2em;
-		}	
-
-		.todo-remove {
-			cursor: pointer;
-			position: absolute;
-			z-index: 1;
-			top: 0px;
-			right: 0px;
-		}
-
-		</style>
+		@TodoFont()
+		@TodoStyle()	
 	</head>
-}
-
-templ contentComponent(title string, body templ.Component) {
-	<body>
-		<h1>{ title }</h1>
-		<div class="content">
-			@body
-		</div>
-	</body>
 }
 
 
 templ ContentPage(title string, body templ.Component) {
 	<html>
 		@headerComponent(title)
-		@contentComponent(title, body)
+		<body>
+			@body
+		</body>
 	</html>
 }
 

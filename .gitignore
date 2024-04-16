@@ -19,3 +19,13 @@
 
 # Go workspace file
 go.work
+
+# created by 'templ generate' 
+*_templ.go
+
+# devenv
+.devenv
+
+# platform dependent ?
+go.sum
+# flake.lock

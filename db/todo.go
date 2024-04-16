@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/a-h/templ"
@@ -18,7 +19,7 @@ type Todo struct {
 
 // ListItem ... <li>{todo}</li>
 func (t *Todo) ListItem() templ.Component {
-	return components.ListItemTodo(t.ID, t.Name, t.Description, t.Available)
+	return components.TodoItem(t.ID, t.Name, t.Description, t.Available)
 }
 
 // Save ...
@@ -42,9 +43,45 @@ func (t *Todo) Delete(store *sql.DB) {
 	deleteTodo(store, Todo{t.ID, t.Name, t.Description, t.Available})
 }
 
-// TodoList Struct ...
+// TodoList Struct ... iterable slice
 type TodoList struct {
+	ci    int // current index
 	Value []Todo
+}
+
+type todoIterator interface {
+	Next() (value interface{}, ok bool)
+}
+
+// Next ...
+func (tl *TodoList) Next() (value Todo, ok bool) {
+	tl.ci++
+	if tl.ci >= len(tl.Value) {
+		return Todo{}, false
+	}
+	return tl.Value[tl.ci], true
+}
+
+// Every ... apply to every TodoList item
+func (tl *TodoList) Every(f func(*Todo)) {
+	tl.ci = -1
+	for item, ok := tl.Next(); ok == true; item, ok = tl.Next() {
+		if ok == true {
+			f(&item)
+		}
+	}
+}
+
+// Filter ...
+func (tl *TodoList) Filter(filter func(*Todo) bool) TodoList {
+	var result TodoList
+	tl.ci = -1
+	for item, ok := tl.Next(); ok == true; item, ok = tl.Next() {
+		if ok == true && filter(&item) == true {
+			result.Value = append(result.Value, item)
+		}
+	}
+	return result
 }
 
 func (tl *TodoList) Read(store *sql.DB) {
@@ -73,6 +110,17 @@ func (tl *TodoList) Read(store *sql.DB) {
 		td.Description = description
 		td.Available = available
 		tl.Value = append(tl.Value, td)
+	}
+	tl.Render()
+}
+
+// Render ...
+func (tl *TodoList) Render() {
+	//tl.ci = -1
+	for _, t := range tl.Value {
+		//Todo{t.ID t.Name t.Description}
+		fmt.Println(t)
+		//t.ListItem().Render()
 	}
 }
 

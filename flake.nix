@@ -78,6 +78,7 @@
                         echo "downloading htmx.min.js"
                         curl -o ./static/htmx.min.js https://unpkg.com/htmx.org@1.9.11/dist/htmx.min.js
                         curl -o ./static/class-tools.js https://unpkg.com/htmx.org@1.9.11/dist/ext/class-tools.js
+                        curl -o ./static/reaniebeaniev20.woff2 https://fonts.gstatic.com/s/reeniebeanie/v20/z7NSdR76eDkaJKZJFkkjuvWxXPq1q6Gjb_0.woff2
                       fi
                     }
 
