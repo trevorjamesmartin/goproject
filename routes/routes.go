@@ -57,7 +57,6 @@ func serveLocalFile(fname string) http.HandlerFunc {
 func NewRouter() http.Handler {
 	mux := http.NewServeMux()
 
-	// local htmx
 	mux.HandleFunc("GET /class-tools.js", serveLocalFile("./static/class-tools.js"))
 	mux.HandleFunc("GET /htmx.min.js", serveLocalFile("./static/htmx.min.js"))
 
@@ -66,8 +65,7 @@ func NewRouter() http.Handler {
 	mux.HandleFunc("/api/todo", todoListHandler)
 	mux.HandleFunc("/api/todo/{id}", todoHandler)
 
-	mux.HandleFunc("/api/todo/toggle/{id}", todoToggle)
-
+	mux.HandleFunc("POST /api/todo/toggle/{id}", todoToggle)
 	mux.HandleFunc("GET /api/todo/edit/{id}", todoEdit)
 	mux.HandleFunc("PUT /api/todo/update/{id}", todoUpdate)
 
@@ -135,7 +133,6 @@ func todoHandler(w http.ResponseWriter, r *http.Request) {
 		todo := db.GetTodo(store, id)
 		if todo.ID > 0 {
 			todo.Delete(store)
-			fmt.Println("DELETED - " + todo.Name)
 		}
 		break
 
@@ -165,8 +162,8 @@ func todoListHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "POST" {
 		r.ParseForm()
-		name := "NEW"
-		description := "TODO"
+		name := "*new Todo"
+		description := "description..."
 		t := db.Todo{}
 		t.Name = name
 		t.Description = description

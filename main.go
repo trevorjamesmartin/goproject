@@ -5,11 +5,19 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/trevorjamesmartin/goproject/middleware"
 	"github.com/trevorjamesmartin/goproject/routes"
 )
 
 func main() {
-	router := routes.NewRouter()
+	api := middleware.Logging(routes.NewRouter())
+
+	server := http.Server{
+		Addr:    ":3000",
+		Handler: api,
+	}
+
 	fmt.Println("Listening @ http://127.0.0.1:3000")
-	http.ListenAndServe(":3000", router)
+
+	server.ListenAndServe()
 }

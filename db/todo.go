@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	"github.com/a-h/templ"
@@ -110,17 +109,6 @@ func (tl *TodoList) Read(store *sql.DB) {
 		td.Description = description
 		td.Available = available
 		tl.Value = append(tl.Value, td)
-	}
-	tl.Render()
-}
-
-// Render ...
-func (tl *TodoList) Render() {
-	//tl.ci = -1
-	for _, t := range tl.Value {
-		//Todo{t.ID t.Name t.Description}
-		fmt.Println(t)
-		//t.ListItem().Render()
 	}
 }
 

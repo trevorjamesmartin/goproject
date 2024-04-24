@@ -127,7 +127,10 @@
                     
                     has-htmx
                     
-                    start-db
+                    if [[ ! -f .envrc ]]; then
+                      # start the db server now
+                      start-db
+                    fi
 
                   '';
 

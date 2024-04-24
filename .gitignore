@@ -22,6 +22,7 @@ go.work
 
 # created by 'templ generate' 
 *_templ.go
+*_templ.txt
 
 # devenv
 .devenv
